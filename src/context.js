@@ -14,8 +14,7 @@ const AppProvider = ({ children }) => {
   const [isOkay, setIsOkay] = useState(false)
   const [sure, setIsSure] = useState(false)
   const [selected, setSelected] = useState({})
-  const [save, setSave] = useState([])
-
+  
   useEffect(() => {
     if (sure) {
       document.body.style.overflow = 'hidden'
@@ -24,38 +23,15 @@ const AppProvider = ({ children }) => {
     }
   }, [sure])
 
-
+  // if it has been upvoted then you need to decrase two
+  //if it has been downvoted then upvote will increase two
   const toggle = ({ id, good, type }) => {
-    console.log('called ?',id,good,type);
-    let mem = { id, type, who: state.currentUser }
-    if (
-      !save.some((item) => {
-        return JSON.stringify(item) === JSON.stringify(mem)
-      })
-    ) {
-      setSave((old) => {
-        return [...old, mem]
-      })
-      dispatch({ type: 'TOGGLE', payload: { id, good, type } })
-    } else {
-      if (mem.type === 'downvote') {
-        dispatch({
-          type: 'TOGGLE',
-          payload: { id, good, type: 'upvote' },
-        })
-      } else {
-        dispatch({
-          type: 'TOGGLE',
-          payload: { id, good, type: 'downvote' },
-        })
-      }
+    dispatch({
+      type: 'TOGGLE',
+      payload: { id, good, type },
+    })
 
-      setSave((old) => {
-        return old.filter((item) => {
-          return JSON.stringify(item) !== JSON.stringify(mem)
-        })
-      })
-    }
+
   }
   const replay = ({
     value,

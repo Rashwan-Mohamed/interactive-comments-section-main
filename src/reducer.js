@@ -2,7 +2,6 @@
 
 const reducer = (state, action) => {
   if (action.type === 'TOGGLE') {
-    console.log('recieved!');
     if (action.payload.good) {
       let updated = state.comments.map((item) => {
         if (item.replies.length > 0) {
@@ -10,6 +9,10 @@ const reducer = (state, action) => {
             if (replay.id === action.payload.id) {
               if (action.payload.type === 'upvote') replay.score += 1
               if (action.payload.type === 'downvote') replay.score -= 1
+              if (action.payload.type === 'd-upvote')
+                replay.score = replay.score + 2
+              if (action.payload.type === 'd-downvote')
+                replay.score = replay.score - 2
             }
           })
         }
@@ -21,6 +24,8 @@ const reducer = (state, action) => {
         if (item.id === action.payload.id) {
           if (action.payload.type === 'upvote') item.score += 1
           if (action.payload.type === 'downvote') item.score -= 1
+          if (action.payload.type === 'd-upvote') item.score = item.score + 2
+          if (action.payload.type === 'd-downvote') item.score = item.score - 2
         }
         return item
       })
@@ -119,7 +124,7 @@ const reducer = (state, action) => {
 
           comment.replies.push({
             id,
-            content:value,
+            content: value,
             createdAt,
             score,
             replyingTo,
@@ -132,38 +137,38 @@ const reducer = (state, action) => {
 
         return comment
       })
-        return { ...state, comments: updated }
+      return { ...state, comments: updated }
     } else {
-            let updated = state.comments.map((comment) => {
-              if (comment.user.username === action.payload.replyingTo) {
-                const {
-                  id,
-                  value,
-                  createdAt,
-                  score,
-                  replyingTo,
-                  user: {
-                    username,
-                    image: { png, webp },
-                  },
-                } = action.payload
+      let updated = state.comments.map((comment) => {
+        if (comment.user.username === action.payload.replyingTo) {
+          const {
+            id,
+            value,
+            createdAt,
+            score,
+            replyingTo,
+            user: {
+              username,
+              image: { png, webp },
+            },
+          } = action.payload
 
-                comment.replies.push({
-                  id,
-                  content: value,
-                  createdAt,
-                  score,
-                  replyingTo,
-                  user: {
-                    username,
-                    image: { png, webp },
-                  },
-                })
-              }
+          comment.replies.push({
+            id,
+            content: value,
+            createdAt,
+            score,
+            replyingTo,
+            user: {
+              username,
+              image: { png, webp },
+            },
+          })
+        }
 
-              return comment
-            })
-            return { ...state, comments: updated }
+        return comment
+      })
+      return { ...state, comments: updated }
     }
   }
 }

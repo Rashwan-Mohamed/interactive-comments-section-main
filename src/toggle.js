@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useGlobalContext } from './context'
 
-export const Teoggle = ({ id, score,good }) => {
+export const Teoggle = ({ id, score, good }) => {
   const [highlight, setHighLight] = useState(false)
   const [lowlight, setLowLight] = useState(false)
   const { toggle } = useGlobalContext()
@@ -10,9 +10,19 @@ export const Teoggle = ({ id, score,good }) => {
     <div className='toggle'>
       <button
         onClick={() => {
-          toggle({ id, good, type: 'upvote' })
-          setHighLight(!highlight)
-          setLowLight(false)
+          console.log('clicked', id)
+          if (highlight && !lowlight) {
+            toggle({ id, good, type: 'downvote' })
+            setHighLight(false)
+          } else if (!highlight && lowlight) {
+            toggle({ id, good, type: 'd-upvote' })
+            setHighLight(true)
+            setLowLight(false)
+          } else {
+            toggle({ id, good, type: 'upvote' })
+            setHighLight(true)
+            setLowLight(false)
+          }
         }}
         className={`${
           highlight && !lowlight ? 'increase highligt' : 'increase'
@@ -28,9 +38,18 @@ export const Teoggle = ({ id, score,good }) => {
       {score}
       <button
         onClick={() => {
-          toggle({ id, good, type: 'downvote' })
-          setLowLight(!lowlight)
-          setHighLight(false)
+          if (!highlight && lowlight) {
+            toggle({ id, good, type: 'upvote' })
+            setLowLight(false)
+          } else if (highlight && !lowlight) {
+            toggle({ id, good, type: 'd-downvote' })
+            setHighLight(false)
+            setLowLight(true)
+          } else {
+            toggle({ id, good, type: 'downvote' })
+            setLowLight(true)
+            setHighLight(false)
+          }
         }}
         className={`${
           lowlight && !highlight ? 'decrease highligt' : 'decrease'
